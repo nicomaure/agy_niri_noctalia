@@ -150,3 +150,10 @@ chmod +x uninstall.sh
 ```
 
 Y retira el widget de tu barra desde los Ajustes de Noctalia (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) $\to$ **Bar** $\to$ **Widgets**.
+
+---
+
+## 👤 Autor
+
+Creado y mantenido por **[nicomaure.com.ar](https://nicomaure.com.ar)**.
+
