@@ -51,4 +51,4 @@ Add the **Antigravity AGY** widget to your Noctalia Bar under **Settings** (Mod+
 - **Spawned Processes:** On click it launches `alacritty` (argv-exec, no shell) running `agy`. No network calls, no filesystem writes.
 - **Compositor Support:** Designed for Niri Wayland Compositor, but functions on any Wayland compositor with Alacritty installed.
 - **Privacy & Security:** Runs entirely locally without network telemetry or remote code execution.
-- **Full Desktop Integration:** For the automated Niri window rule, desktop launcher, and the bundled Antigravity skill, see the companion repository: [nicomaure/agy_niri_noctalia](https://github.com/nicomaure/agy_niri_noctalia).
+- **Full Desktop Integration:** This plugin pairs with the `cachyos-niri-noctalia` agent skill — it teaches `agy` how to diagnose and configure your Niri + Noctalia desktop safely (read-only diagnostics, backup-before-edit rules). Get it plus the automated Niri window rule and desktop launcher from the companion repository: [nicomaure/agy_niri_noctalia](https://github.com/nicomaure/agy_niri_noctalia).
