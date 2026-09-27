@@ -33,7 +33,7 @@ window-rule {
 
 ## Usage
 
-Add the **Antigravity AGY** widget to your Noctalia Bar under **Settings** (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) -> **Bar** -> **Widgets**.
+Add the **Antigravity AGY** widget to your Noctalia Bar under **Settings** (Mod+Shift+S) -> **Bar** -> **Widgets**.
 
 - **Left click:** Launches `agy` in your project folder (`~/Proyectos/agy` if available) inside a floating Alacritty terminal.
 - **Right click:** Launches `agy` in your user home directory (`$HOME`).
