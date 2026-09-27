@@ -6,16 +6,26 @@
 
 set -e
 
-# Target directory: argument 1, or ~/Proyectos/agy, or $HOME fallback
-if [ -n "$1" ] && [ -d "$1" ]; then
-    cd "$1"
+# Target directory handling with tilde expansion
+if [ "$1" = "home" ]; then
+    cd "$HOME"
+elif [ -n "$1" ]; then
+    # Expand leading ~ to $HOME
+    TARGET_DIR="${1/#\~/$HOME}"
+    if [ -d "$TARGET_DIR" ]; then
+        cd "$TARGET_DIR"
+    elif [ -d "$HOME/Proyectos/agy" ]; then
+        cd "$HOME/Proyectos/agy"
+    else
+        cd "$HOME"
+    fi
 elif [ -d "$HOME/Proyectos/agy" ]; then
     cd "$HOME/Proyectos/agy"
 else
     cd "$HOME"
 fi
 
-# Locate and run agy
+# Locate and execute agy
 if command -v agy >/dev/null 2>&1; then
     exec agy
 elif [ -x "$HOME/.local/bin/agy" ]; then

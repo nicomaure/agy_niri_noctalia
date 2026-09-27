@@ -54,6 +54,8 @@ if [ -d "$SCRIPT_DIR/desktop" ]; then
     echo "==> [3/5] Installing desktop launcher: $DESKTOP_DIR/agy.desktop"
     mkdir -p "$DESKTOP_DIR"
     cp "$SCRIPT_DIR/desktop/agy.desktop" "$DESKTOP_DIR/"
+    # Use full path in installed desktop file so graphical session always finds agy-hud
+    sed -i "s|agy-hud|$HOME/.local/bin/agy-hud|g" "$DESKTOP_DIR/agy.desktop"
     if command -v update-desktop-database >/dev/null 2>&1; then
         update-desktop-database "$DESKTOP_DIR" >/dev/null 2>&1 || true
     fi
@@ -90,8 +92,14 @@ window-rule {
 EOF
         echo "    Rule added successfully (backup created at $NIRI_TARGET.bak.*)."
         if command -v niri >/dev/null 2>&1; then
-            if niri validate --config "$HOME/.config/niri/config.kdl" >/dev/null 2>&1; then
-                echo "    Niri configuration validated successfully."
+            NIRI_VAL_CONF=""
+            if [ -f "$HOME/.config/niri/config.kdl" ]; then
+                NIRI_VAL_CONF="$HOME/.config/niri/config.kdl"
+            else
+                NIRI_VAL_CONF="$NIRI_TARGET"
+            fi
+            if niri validate --config "$NIRI_VAL_CONF" >/dev/null 2>&1; then
+                echo "    Niri configuration validated successfully ($NIRI_VAL_CONF)."
             else
                 echo "⚠️  Niri validation reported warnings/errors. Please review $NIRI_TARGET."
             fi

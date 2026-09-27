@@ -1,6 +1,10 @@
 --!nonstrict
 -- Bar widget entry for Antigravity AGY launcher
 
+local function sanitize(str: string): string
+  return string.gsub(str, "[\"`\$\\]", "")
+end
+
 local function render()
   local showLabel = noctalia.getConfig("show_label") ~= false
   barWidget.setGlyph("sparkles")
@@ -17,12 +21,13 @@ function update()
 end
 
 function onClick()
-  local projectDir = noctalia.getConfig("project_dir") or "~/Proyectos/agy"
-  noctalia.runAsync(`alacritty --class agy-terminal -T "Antigravity AGY" -e agy-hud "{projectDir}"`)
+  local rawDir = noctalia.getConfig("project_dir") or "~/Proyectos/agy"
+  local cleanDir = sanitize(rawDir)
+  noctalia.runAsync(`alacritty --class agy-terminal -T "Antigravity AGY" -e agy-hud "{cleanDir}"`)
 end
 
 function onRightClick()
-  noctalia.runAsync('alacritty --class agy-terminal -T "Antigravity AGY" -e agy-hud "$HOME"')
+  noctalia.runAsync('alacritty --class agy-terminal -T "Antigravity AGY" -e agy-hud home')
 end
 
 render()
