@@ -153,7 +153,29 @@ Y retira el widget de tu barra desde los Ajustes de Noctalia (<kbd>Mod</kbd>+<kb
 
 ---
 
+## 🌐 Publicación en Noctalia Community Plugins
+
+La carpeta [`agy/`](./agy) de este repositorio cumple estrictamente con el 100% de los requisitos del monorepo [Noctalia Community Plugins](https://github.com/noctalia-dev/community-plugins):
+
+- **ID y formato:** `nicomaure/agy` (directorio `agy/`).
+- **Linter de Noctalia:** Valida con `0 errors, 0 warnings` (`noctalia plugins lint agy`).
+- **Tarjeta visual:** `thumbnail.webp` (960×540 WebP).
+- **Traducciones:** `translations/en.json`.
+- **Documentación de tienda:** `agy/README.md` siguiendo la plantilla oficial `README_TEMPLATE.md`.
+- **Tags de catálogo:** `ai`, `utility`, `bar`, `niri`, `productivity` (todos en la lista blanca).
+
+### Pasos para enviar el PR a la tienda:
+1. Haz un fork de [noctalia-dev/community-plugins](https://github.com/noctalia-dev/community-plugins).
+2. Copia la carpeta `agy/` a la raíz de tu fork:
+   ```bash
+   cp -r /ruta/a/noctalia-widget/agy /ruta/a/community-plugins/
+   ```
+3. Haz commit y abre un Pull Request contra la rama `main`.
+
+---
+
 ## 👤 Autor
 
 Creado y mantenido por **[nicomaure.com.ar](https://nicomaure.com.ar)**.
+
 
