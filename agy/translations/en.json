@@ -1,0 +1,11 @@
+{
+  "bar": {
+    "tooltip": "Antigravity Agent CLI (Click: project | Right-click: home)"
+  },
+  "settings": {
+    "show_label": {
+      "label": "Show label in bar",
+      "description": "Show the AGY text label next to the icon in the bar."
+    }
+  }
+}

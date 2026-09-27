@@ -9,8 +9,8 @@ echo "==> Desinstalando Antigravity (AGY) Combo de Noctalia..."
 
 # 1. Deshabilitar en Noctalia
 if command -v noctalia >/dev/null 2>&1; then
-    echo "==> Deshabilitando plugin local/agy en Noctalia..."
-    noctalia msg plugins disable local/agy 2>/dev/null || true
+    echo "==> Deshabilitando plugin nicomaure/agy en Noctalia..."
+    noctalia msg plugins disable nicomaure/agy 2>/dev/null || noctalia msg plugins disable local/agy 2>/dev/null || true
 fi
 
 # 2. Eliminar archivos del plugin

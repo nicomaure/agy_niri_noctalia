@@ -34,13 +34,13 @@ fi
 # 2. Copiar archivos del plugin de Noctalia
 echo "==> [1/4] Copiando archivos del plugin a: $TARGET_DIR"
 mkdir -p "$TARGET_DIR"
-cp -r "$SCRIPT_DIR/plugin/"* "$TARGET_DIR/"
+cp -r "$SCRIPT_DIR/agy/"* "$TARGET_DIR/"
 
 # 3. Registrar la fuente local y habilitar el plugin en Noctalia
 if command -v noctalia >/dev/null 2>&1; then
     echo "==> [2/4] Registrando fuente local en Noctalia y habilitando plugin..."
     noctalia msg plugins source add local path "$LOCAL_SOURCE_DIR" 2>/dev/null || true
-    noctalia msg plugins enable local/agy || true
+    noctalia msg plugins enable nicomaure/agy 2>/dev/null || noctalia msg plugins enable local/agy 2>/dev/null || true
 fi
 
 # 4. Instalar acceso directo de escritorio .desktop
