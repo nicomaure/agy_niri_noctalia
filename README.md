@@ -1,89 +1,95 @@
-# 🚀 Combo Antigravity (AGY) para Noctalia Bar & Niri Compositor
+# Antigravity AGY for Noctalia Bar & Niri
 
-Suite integral y portátil para **CachyOS / Arch Linux** que integra el agente CLI **Antigravity (`agy`)** en el entorno de escritorio **Niri (Wayland)** y la shell **Noctalia**, equipando al agente con una **Skill especializada** para comprender, diagnosticar y configurar el sistema.
+A native bar launcher and floating HUD integration for the **[Antigravity CLI](https://github.com/) (`agy`)** AI agent on **[Noctalia Desktop Shell](https://noctalia.dev)** and the **[Niri Wayland Compositor](https://github.com/YaLTeR/niri)**.
 
----
-
-## 🧩 ¿Qué incluye este Combo?
-
-El paquete reúne cuatro piezas que funcionan en perfecta armonía:
-
-1. **Widget para la Barra de Noctalia (`bar.luau`):**
-   - Un botón nativo (✨ `AGY`) con icono personalizable y tooltip interactivo.
-   - **Clic izquierdo:** Abre `agy` en tu proyecto (`~/Proyectos/agy` si existe, o en la carpeta actual).
-   - **Clic derecho:** Abre `agy` directamente en tu carpeta de usuario (`$HOME`).
-   - Cero consumo de CPU en reposo (corre dentro del motor Luau de Noctalia).
-
-2. **Regla de Ventana Flotante para Niri (`rules.kdl`):**
-   - Hace que la terminal de `agy` se abra en el centro de la pantalla (`1100x720`) como un **HUD / scratchpad flotante**, con esquinas redondeadas, sin romper el mosaico continuo de tus ventanas.
-
-3. **Skill Especializada para Antigravity (`cachyos-niri-noctalia`):**
-   - Se instala en el sistema de descubrimiento global de AGY (`~/.gemini/config/skills/`).
-   - Le enseña a tu agente `agy` la arquitectura de CachyOS, los comandos de Niri (`niri msg ...`, `niri validate`), la configuración de Noctalia (IPC y TOML) y las reglas de seguridad antes de modificar archivos.
-   - Se invoca dentro de `agy` escribiendo:
-     ```text
-     /cachyos-niri-noctalia
-     ```
-
-4. **Lanzador de Escritorio (`agy.desktop`):**
-   - Permite buscar **Antigravity CLI** en el lanzador de Noctalia (<kbd>Mod</kbd>+<kbd>Ctrl</kbd>+<kbd>Enter</kbd>) y anclarlo directamente al Dock.
+Includes a dedicated bar widget, floating window rules, desktop launcher, and an integrated Antigravity Skill (`cachyos-niri-noctalia`) that teaches your agent how to diagnose, configure, and operate your desktop environment safely.
 
 ---
 
-## 📋 Requisitos Previos
+## Plugin
 
-- **Noctalia Desktop Shell** (`noctalia`)
-- **Niri Compositor** (`niri`)
-- **Alacritty** (`alacritty`) como emulador de terminal predeterminado
-- **Antigravity CLI** (`agy`) instalado (en `$PATH` o en `~/.local/bin/agy`)
+| Field | Value |
+| --- | --- |
+| ID | `nicomaure/agy` |
+| Entries | Bar widget: `bar` |
 
 ---
 
-## ⚡ Instalación en 1 Comando (Recomendada)
+## Features
 
-Clona o descomprime esta carpeta en cualquier equipo y ejecuta el instalador:
+- **One-Click Agent Access:** Clean ✨ **AGY** bar widget in Noctalia with customizable glyph and label.
+- **Floating HUD Terminal:** Niri window rule ensures `agy` opens in a centered, floating window (`1100x720`) with rounded corners without disturbing your tiling layout.
+- **Dual Launch Actions:**
+  - **Left click:** Launches `agy` in your project workspace (`~/Proyectos/agy` if present, or current working directory).
+  - **Right click:** Launches `agy` in your user home directory (`$HOME`).
+- **Antigravity Desktop Skill:** Equips `agy` with the `/cachyos-niri-noctalia` skill to inspect display outputs, keybindings, window rules, and bar widgets with zero-risk read-only diagnostics.
+- **Zero Resource Consumption:** Runs inside Noctalia's native Luau runtime. 0% CPU and negligible memory while idle; all terminal resources are freed immediately upon exit.
+- **100% Portable:** Dynamically resolves `$HOME` and `$PATH` with no hardcoded usernames or fixed paths.
+
+---
+
+## Requirements
+
+- **[Noctalia Desktop Shell](https://noctalia.dev)** (`noctalia`)
+- **[Niri Wayland Compositor](https://github.com/YaLTeR/niri)** (`niri`)
+- **Alacritty** terminal emulator (`alacritty`)
+- **Antigravity CLI** (`agy`) installed on `PATH` or in `~/.local/bin/agy`
+
+---
+
+## Installation
+
+### Automatic Install (Recommended)
+
+Clone the repository and run the installer:
 
 ```bash
+git clone https://github.com/nicomaure/agy_niri_noctalia.git
+cd agy_niri_noctalia
 chmod +x install.sh
 ./install.sh
 ```
 
-El script se encarga de:
-1. Copiar y habilitar el plugin local en Noctalia (`~/.config/noctalia/plugins/local/agy`).
-2. Instalar el lanzador de escritorio en `~/.local/share/applications/agy.desktop`.
-3. Añadir la regla flotante a tu archivo `~/.config/niri/cfg/rules.kdl` (creando un backup previo).
-4. Instalar la Skill `cachyos-niri-noctalia` en `~/.gemini/config/skills/` para que `agy` la use en cualquier proyecto.
+The installer automatically:
+1. Installs the plugin into `~/.config/noctalia/plugins/local/agy` and enables it.
+2. Adds the floating HUD window rule to `~/.config/niri/cfg/rules.kdl` (with an automatic backup).
+3. Installs the desktop launcher to `~/.local/share/applications/agy.desktop` (for Noctalia Launcher and Dock).
+4. Installs the `cachyos-niri-noctalia` Skill to `~/.gemini/config/skills/` for system-wide agent discovery.
 
-### 📌 Añadir el botón a la barra:
-1. Presiona <kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> para abrir los Ajustes de Noctalia.
-2. Ve a **Bar** $\to$ **Widgets**.
-3. Arrastra **Antigravity AGY** al centro o al bloque derecho de tu barra.
+### Adding the Widget to your Bar
 
-### 🔄 Aplicar la regla de ventana en Niri:
+1. Open Noctalia Settings (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>).
+2. Navigate to **Bar** $\to$ **Widgets**.
+3. Drag **Antigravity AGY** to your preferred position (center or end).
+
+### Reloading Niri
+
+Apply the new floating rule immediately:
+
 ```bash
 niri msg action load-config-file
 ```
 
 ---
 
-## 🛠️ Instalación Manual Paso a Paso
+## Manual Installation
 
-Si prefieres realizar la configuración manualmente o incorporarla a tus *dotfiles*:
+If you prefer configuring it manually or integrating it into your dotfiles:
 
-### 1. Plugin de Noctalia
+### 1. Noctalia Plugin
 ```bash
 mkdir -p ~/.config/noctalia/plugins/local/agy
-cp plugin/* ~/.config/noctalia/plugins/local/agy/
+cp -r agy/* ~/.config/noctalia/plugins/local/agy/
 
-# Registrar fuente local y habilitar
 noctalia msg plugins source add local path ~/.config/noctalia/plugins/local
-noctalia msg plugins enable local/agy
+noctalia msg plugins enable nicomaure/agy
 ```
 
-### 2. Regla de Niri
-Añade a `~/.config/niri/cfg/rules.kdl` (o `config.kdl`):
+### 2. Niri Window Rule
+Add to `~/.config/niri/cfg/rules.kdl`:
+
 ```kdl
-// Ventana flotante estilo HUD para el CLI de AGY
+// Floating HUD window for AGY CLI
 window-rule {
     match app-id="agy-terminal"
     open-floating true
@@ -91,15 +97,14 @@ window-rule {
     default-window-height { fixed 720; }
 }
 ```
-Y recarga: `niri msg action load-config-file`.
 
-### 3. Skill de Antigravity
+### 3. Antigravity Skill
 ```bash
 mkdir -p ~/.gemini/config/skills/cachyos-niri-noctalia
 cp -r skills/cachyos-niri-noctalia/* ~/.gemini/config/skills/cachyos-niri-noctalia/
 ```
 
-### 4. Lanzador de Escritorio
+### 4. Desktop Entry
 ```bash
 mkdir -p ~/.local/share/applications
 cp desktop/agy.desktop ~/.local/share/applications/
@@ -108,74 +113,48 @@ update-desktop-database ~/.local/share/applications/
 
 ---
 
-## 🎯 Cómo Usar el Asistente
+## Usage
 
-1. **Haz clic en el icono ✨ AGY** de tu barra de Noctalia (o presiona su atajo).
-2. Se abrirá la ventana flotante de `agy`.
-3. Escribe cualquier consulta sobre tu entorno, o invoca la skill directamente:
-   ```text
-   /cachyos-niri-noctalia
-   ```
-4. Ejemplos de uso con la skill:
-   - *"¿Por qué mi monitor externo no escala bien?"*
-   - *"Agrégale un atajo a Niri para abrir Zed"*
-   - *"Configura un widget de volumen en la barra de Noctalia"*
-   - *"Revisa si mis archivos de configuración tienen errores de sintaxis"*
-
-El agente utilizará los comandos seguros de solo lectura (`niri msg ...`, `niri validate`, `noctalia config validate`) y te mostrará copias de seguridad antes de cualquier modificación.
+- **Click the ✨ AGY widget** on your Noctalia Bar to spawn your agent HUD.
+- **Inside the AGY terminal**, interact normally or invoke the desktop skill:
+  ```text
+  /cachyos-niri-noctalia
+  ```
+  Ask the agent to inspect displays, check shortcut conflicts, create window rules, or adjust Noctalia settings.
 
 ---
 
-## 🎨 Personalización
+## Settings
 
-### Cambiar de terminal (Kitty, Foot, etc.)
-En `~/.config/noctalia/plugins/local/agy/bar.luau`:
-- **Para Kitty:** Cambia la llamada a `kitty --class agy-terminal -T 'Antigravity AGY' agy`
-- **Para Foot:** Cambia la llamada a `foot --app-id agy-terminal -T 'Antigravity AGY' agy`
+| Setting | Type | Default | Description |
+| --- | --- | --- | --- |
+| `show_label` | `bool` | `true` | Show the AGY text label next to the icon in the bar. |
 
-### Cambiar el icono o etiqueta del widget
-En `bar.luau`:
-- Glifo: Puedes usar cualquier icono de Tabler Icons (`"robot"`, `"sparkles"`, `"terminal"`, `"brand-google"`, `"code"`).
-- Texto: Modifica `barWidget.setText("AGY")` o déjalo vacío `""` si solo quieres el icono.
+Settings can be toggled visually under Noctalia Settings (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) $\to$ **Plugins** $\to$ **Antigravity AGY**.
 
 ---
 
-## 🗑️ Desinstalación
+## Notes
 
-Para retirar el paquete completo de forma limpia:
+- **Process Lifecycle:** The widget runs as a lightweight Luau bar entry with 0% CPU consumption while idle. It spawns Alacritty on demand.
+- **Compositor Support:** Designed specifically for Niri Wayland Compositor, but compatible with any Wayland environment with Alacritty.
+- **Privacy & Security:** Runs entirely locally with zero telemetry, zero background network calls, and no remote code execution.
+
+---
+
+## Uninstallation
+
+To remove the integration cleanly:
 
 ```bash
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
 
-Y retira el widget de tu barra desde los Ajustes de Noctalia (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) $\to$ **Bar** $\to$ **Widgets**.
+Then remove the widget from your bar via Noctalia Settings (<kbd>Mod</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) $\to$ **Bar** $\to$ **Widgets**.
 
 ---
 
-## 🌐 Publicación en Noctalia Community Plugins
+## Author
 
-La carpeta [`agy/`](./agy) de este repositorio cumple estrictamente con el 100% de los requisitos del monorepo [Noctalia Community Plugins](https://github.com/noctalia-dev/community-plugins):
-
-- **ID y formato:** `nicomaure/agy` (directorio `agy/`).
-- **Linter de Noctalia:** Valida con `0 errors, 0 warnings` (`noctalia plugins lint agy`).
-- **Tarjeta visual:** `thumbnail.webp` (960×540 WebP).
-- **Traducciones:** `translations/en.json`.
-- **Documentación de tienda:** `agy/README.md` siguiendo la plantilla oficial `README_TEMPLATE.md`.
-- **Tags de catálogo:** `ai`, `utility`, `bar`, `niri`, `productivity` (todos en la lista blanca).
-
-### Pasos para enviar el PR a la tienda:
-1. Haz un fork de [noctalia-dev/community-plugins](https://github.com/noctalia-dev/community-plugins).
-2. Copia la carpeta `agy/` a la raíz de tu fork:
-   ```bash
-   cp -r /ruta/a/noctalia-widget/agy /ruta/a/community-plugins/
-   ```
-3. Haz commit y abre un Pull Request contra la rama `main`.
-
----
-
-## 👤 Autor
-
-Creado y mantenido por **[nicomaure.com.ar](https://nicomaure.com.ar)**.
-
-
+Created and maintained by **[nicomaure.com.ar](https://nicomaure.com.ar)**.
