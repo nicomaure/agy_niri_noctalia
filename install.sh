@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Script de instalación del Combo Antigravity (AGY) para Noctalia + Niri
-# Incluye:
-#  1. Widget de Noctalia Bar
-#  2. Regla de ventana flotante para Niri
-#  3. Lanzador .desktop para Noctalia Launcher y Dock
-#  4. Skill de Antigravity (cachyos-niri-noctalia) para que AGY comprenda el entorno
+# Installation Script: Antigravity (AGY) Combo for Noctalia + Niri
+# Author: nicomaure.com.ar
 # ==============================================================================
 
 set -e
@@ -15,38 +11,47 @@ TARGET_DIR="$HOME/.config/noctalia/plugins/local/agy"
 LOCAL_SOURCE_DIR="$HOME/.config/noctalia/plugins/local"
 
 echo "=============================================================================="
-echo "🚀 Instalando Combo Antigravity (AGY) para Noctalia + Niri en CachyOS..."
+echo "🚀 Installing Antigravity (AGY) Combo for Noctalia & Niri..."
 echo "=============================================================================="
 
-# 1. Comprobación de dependencias básicas
+# 1. Dependency checks
 if ! command -v noctalia >/dev/null 2>&1; then
-    echo "⚠️  ADVERTENCIA: 'noctalia' no está en el PATH. Asegúrate de tener Noctalia instalado."
+    echo "⚠️  WARNING: 'noctalia' was not found on PATH. Ensure Noctalia is installed."
 fi
 
 if ! command -v alacritty >/dev/null 2>&1; then
-    echo "⚠️  ADVERTENCIA: 'alacritty' no está instalado. El widget usa Alacritty como terminal predeterminado."
+    echo "⚠️  WARNING: 'alacritty' was not found on PATH. The HUD terminal defaults to Alacritty."
 fi
 
 if ! command -v agy >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/agy" ]; then
-    echo "ℹ️  Nota: 'agy' aún no está instalado o no se encuentra en PATH (~/.local/bin/agy)."
+    echo "ℹ️  Notice: 'agy' CLI was not found on PATH nor in ~/.local/bin/agy."
+    echo "   Ensure you have Antigravity CLI installed to run the agent."
 fi
 
-# 2. Copiar archivos del plugin de Noctalia
-echo "==> [1/4] Copiando archivos del plugin a: $TARGET_DIR"
+# 2. Install agy-hud helper script
+echo "==> [1/5] Installing launcher helper: ~/.local/bin/agy-hud"
+mkdir -p "$HOME/.local/bin"
+cp "$SCRIPT_DIR/bin/agy-hud" "$HOME/.local/bin/agy-hud"
+chmod +x "$HOME/.local/bin/agy-hud"
+
+# 3. Install Noctalia bar plugin
+echo "==> [2/5] Installing Noctalia plugin: $TARGET_DIR"
 mkdir -p "$TARGET_DIR"
 cp -r "$SCRIPT_DIR/agy/"* "$TARGET_DIR/"
 
-# 3. Registrar la fuente local y habilitar el plugin en Noctalia
 if command -v noctalia >/dev/null 2>&1; then
-    echo "==> [2/4] Registrando fuente local en Noctalia y habilitando plugin..."
-    noctalia msg plugins source add local path "$LOCAL_SOURCE_DIR" 2>/dev/null || true
-    noctalia msg plugins enable nicomaure/agy 2>/dev/null || noctalia msg plugins enable local/agy 2>/dev/null || true
+    echo "    Registering local source in Noctalia..."
+    if ! noctalia msg plugins source add local path "$LOCAL_SOURCE_DIR" 2>/dev/null; then
+        echo "    (Source 'local' already registered or updated)"
+    fi
+    echo "    Enabling plugin 'nicomaure/agy'..."
+    noctalia msg plugins enable nicomaure/agy || echo "⚠️  Could not automatically enable plugin via IPC. You can enable it from Settings."
 fi
 
-# 4. Instalar acceso directo de escritorio .desktop
+# 4. Install Desktop Entry
 DESKTOP_DIR="$HOME/.local/share/applications"
 if [ -d "$SCRIPT_DIR/desktop" ]; then
-    echo "==> [3/4] Instalando lanzador de escritorio en $DESKTOP_DIR..."
+    echo "==> [3/5] Installing desktop launcher: $DESKTOP_DIR/agy.desktop"
     mkdir -p "$DESKTOP_DIR"
     cp "$SCRIPT_DIR/desktop/agy.desktop" "$DESKTOP_DIR/"
     if command -v update-desktop-database >/dev/null 2>&1; then
@@ -54,56 +59,71 @@ if [ -d "$SCRIPT_DIR/desktop" ]; then
     fi
 fi
 
-# 5. Configurar regla de ventana flotante en Niri (si existe la configuración)
-NIRI_RULES="$HOME/.config/niri/cfg/rules.kdl"
-if [ -f "$NIRI_RULES" ]; then
-    if ! grep -q 'app-id="agy-terminal"' "$NIRI_RULES"; then
-        echo "==> [4/4] Añadiendo regla de ventana flotante en $NIRI_RULES..."
-        cp "$NIRI_RULES" "$NIRI_RULES.bak.$(date +%Y%m%d_%H%M%S)"
-        cat >> "$NIRI_RULES" << 'EOF'
+# 5. Configure Niri floating HUD rule
+echo "==> [4/5] Checking Niri configuration for floating HUD rule..."
+NIRI_TARGET=""
+if [ -f "$HOME/.config/niri/cfg/rules.kdl" ]; then
+    NIRI_TARGET="$HOME/.config/niri/cfg/rules.kdl"
+elif [ -f "$HOME/.config/niri/config.kdl" ]; then
+    NIRI_TARGET="$HOME/.config/niri/config.kdl"
+fi
 
-// Ventana flotante estilo HUD para el CLI de AGY
+if [ -n "$NIRI_TARGET" ]; then
+    if grep -q "BEGIN AGY_NIRI_NOCTALIA" "$NIRI_TARGET"; then
+        echo "    Rule already present in $NIRI_TARGET."
+    else
+        echo "    Adding delimited floating rule to $NIRI_TARGET..."
+        cp "$NIRI_TARGET" "$NIRI_TARGET.bak.$(date +%Y%m%d_%H%M%S)"
+        cat >> "$NIRI_TARGET" << 'EOF'
+
+// BEGIN AGY_NIRI_NOCTALIA
+// Floating HUD window for AGY CLI
 window-rule {
-    match app-id="agy-terminal"
+    match app-id="^agy-terminal$"
     open-floating true
+    geometry-corner-radius 16
+    clip-to-geometry true
     default-column-width { fixed 1100; }
     default-window-height { fixed 720; }
 }
+// END AGY_NIRI_NOCTALIA
 EOF
-        echo "    Regla añadida (respaldo creado en $NIRI_RULES.bak.*)."
+        echo "    Rule added successfully (backup created at $NIRI_TARGET.bak.*)."
         if command -v niri >/dev/null 2>&1; then
-            niri validate --config "$HOME/.config/niri/config.kdl" >/dev/null 2>&1 && echo "    Configuración de Niri validada con éxito."
+            if niri validate --config "$HOME/.config/niri/config.kdl" >/dev/null 2>&1; then
+                echo "    Niri configuration validated successfully."
+            else
+                echo "⚠️  Niri validation reported warnings/errors. Please review $NIRI_TARGET."
+            fi
         fi
-    else
-        echo "==> [4/4] La regla para 'agy-terminal' ya existe en Niri."
     fi
+else
+    echo "ℹ️  No Niri configuration file found at ~/.config/niri/cfg/rules.kdl or ~/.config/niri/config.kdl."
+    echo "   If you use Niri, you can manually add the rule from niri/rules.kdl.example."
 fi
 
-# 6. Instalar Skill de Antigravity (cachyos-niri-noctalia)
+# 6. Install Antigravity Skill
 SKILL_SRC="$SCRIPT_DIR/skills/cachyos-niri-noctalia"
 if [ -d "$SKILL_SRC" ]; then
-    # Ubicación global de discovery de skills de AGY: ~/.gemini/config/skills/
     GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills/cachyos-niri-noctalia"
-    echo "==> [+] Instalando Skill de Antigravity en $GLOBAL_SKILLS_DIR..."
+    echo "==> [5/5] Installing Antigravity Desktop Skill: $GLOBAL_SKILLS_DIR"
     mkdir -p "$GLOBAL_SKILLS_DIR"
     cp -r "$SKILL_SRC/"* "$GLOBAL_SKILLS_DIR/"
-    echo "    ✅ Skill 'cachyos-niri-noctalia' instalada globalmente para agy."
+    echo "    Skill 'cachyos-niri-noctalia' installed."
 fi
 
 echo ""
 echo "=============================================================================="
-echo "🎉 ¡Instalación del Combo completada con éxito!"
+echo "🎉 Installation completed successfully!"
 echo ""
-echo "Acciones para empezar a usarlo:"
-echo "1. Mostrar el botón en la barra:"
-echo "   - Abre Ajustes de Noctalia (Mod+Shift+S) -> 'Bar' -> 'Widgets'."
-echo "   - Arrastra 'Antigravity AGY' a tu barra (centro o derecha)."
-echo "   (O edita ~/.local/state/noctalia/settings.toml añadiendo 'agy' a [bar.default])."
+echo "Next steps:"
+echo "1. Show the widget in Noctalia Bar:"
+echo "   - Open Noctalia Settings (Mod+Shift+S) -> 'Bar' -> 'Widgets'."
+echo "   - Drag 'Antigravity AGY' to your bar (center or right)."
 echo ""
-echo "2. Aplicar la regla de ventana en Niri ahora mismo:"
+echo "2. Reload Niri configuration (if running Niri):"
 echo "   niri msg action load-config-file"
 echo ""
-echo "3. Usar el asistente especializado con AGY:"
-echo "   - Haz clic en el botón de la barra para abrir AGY."
-echo "   - Escribe en AGY: /cachyos-niri-noctalia para que diagnostique o configure tu entorno."
+echo "3. Try the desktop skill inside AGY:"
+echo "   Click the AGY icon and type /cachyos-niri-noctalia"
 echo "=============================================================================="

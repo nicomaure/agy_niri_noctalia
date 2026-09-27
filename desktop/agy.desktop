@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=Antigravity CLI
 GenericName=AI Agent CLI
-Comment=Antigravity Agent CLI
-Exec=alacritty --class agy-terminal -T "Antigravity AGY" -e sh -c 'if [ -d "$HOME/Proyectos/agy" ]; then cd "$HOME/Proyectos/agy"; fi; if command -v agy >/dev/null 2>&1; then agy; elif [ -x "$HOME/.local/bin/agy" ]; then "$HOME/.local/bin/agy"; else agy; fi'
+Comment=Antigravity Agent CLI Floating HUD
+Exec=alacritty --class agy-terminal -T "Antigravity AGY" -e agy-hud
 Icon=utilities-terminal
 Terminal=false
 Type=Application

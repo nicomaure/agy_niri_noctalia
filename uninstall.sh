@@ -1,46 +1,81 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Script de desinstalación de Antigravity (AGY) Combo para Noctalia + Niri
+# Uninstallation Script: Antigravity (AGY) Combo for Noctalia + Niri
+# Author: nicomaure.com.ar
 # ==============================================================================
 
 set -e
 
-echo "==> Desinstalando Antigravity (AGY) Combo de Noctalia..."
+echo "=============================================================================="
+echo "🧹 Uninstalling Antigravity (AGY) Combo..."
+echo "=============================================================================="
 
-# 1. Deshabilitar en Noctalia
+# 1. Disable in Noctalia
 if command -v noctalia >/dev/null 2>&1; then
-    echo "==> Deshabilitando plugin nicomaure/agy en Noctalia..."
+    echo "==> [1/5] Disabling plugin in Noctalia..."
     noctalia msg plugins disable nicomaure/agy 2>/dev/null || noctalia msg plugins disable local/agy 2>/dev/null || true
 fi
 
-# 2. Eliminar archivos del plugin
+# 2. Remove Noctalia plugin files
 TARGET_DIR="$HOME/.config/noctalia/plugins/local/agy"
 if [ -d "$TARGET_DIR" ]; then
-    echo "==> Eliminando carpeta del plugin: $TARGET_DIR..."
+    echo "==> [2/5] Removing plugin files: $TARGET_DIR..."
     rm -rf "$TARGET_DIR"
 fi
 
-# 3. Eliminar lanzador .desktop
+# 3. Remove Desktop Entry
 DESKTOP_FILE="$HOME/.local/share/applications/agy.desktop"
 if [ -f "$DESKTOP_FILE" ]; then
-    echo "==> Eliminando lanzador de escritorio: $DESKTOP_FILE..."
+    echo "==> [3/5] Removing desktop launcher: $DESKTOP_FILE..."
     rm -f "$DESKTOP_FILE"
     if command -v update-desktop-database >/dev/null 2>&1; then
         update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
     fi
 fi
 
-# 4. Eliminar skill global de Antigravity
+# 4. Remove agy-hud helper binary
+HELPER_BIN="$HOME/.local/bin/agy-hud"
+if [ -f "$HELPER_BIN" ]; then
+    echo "==> [4/5] Removing launcher helper: $HELPER_BIN..."
+    rm -f "$HELPER_BIN"
+fi
+
+# 5. Remove Niri delimited rule cleanly
+echo "==> [5/5] Checking and removing Niri delimited rule..."
+remove_niri_rule() {
+    local target="$1"
+    if [ -f "$target" ] && grep -q "BEGIN AGY_NIRI_NOCTALIA" "$target"; then
+        echo "    Removing rule from $target..."
+        cp "$target" "$target.bak.$(date +%Y%m%d_%H%M%S)"
+        python3 -c '
+import re, sys
+path = sys.argv[1]
+with open(path, "r") as f:
+    content = f.read()
+new_content = re.sub(r"\n?\s*// BEGIN AGY_NIRI_NOCTALIA[\s\S]*?// END AGY_NIRI_NOCTALIA\n?", "\n", content)
+with open(path, "w") as f:
+    f.write(new_content)
+' "$target"
+        echo "    Rule cleanly removed (backup saved at $target.bak.*)."
+        if command -v niri >/dev/null 2>&1 && [ -f "$HOME/.config/niri/config.kdl" ]; then
+            niri validate --config "$HOME/.config/niri/config.kdl" >/dev/null 2>&1 || true
+        fi
+    fi
+}
+
+remove_niri_rule "$HOME/.config/niri/cfg/rules.kdl"
+remove_niri_rule "$HOME/.config/niri/config.kdl"
+
+# 6. Remove Antigravity Skill
 SKILL_DIR="$HOME/.gemini/config/skills/cachyos-niri-noctalia"
 if [ -d "$SKILL_DIR" ]; then
-    echo "==> Eliminando skill de Antigravity: $SKILL_DIR..."
+    echo "==> [+] Removing Antigravity skill: $SKILL_DIR..."
     rm -rf "$SKILL_DIR"
 fi
 
 echo ""
 echo "=============================================================================="
-echo "✅ Desinstalación de archivos completada."
-echo ""
-echo "Nota: Si agregaste el widget a tu barra, puedes retirarlo desde:"
-echo "  Ajustes de Noctalia (Mod+Shift+S) -> Bar -> Widgets."
+echo "✅ Clean uninstallation completed."
+echo "Note: If the widget was added to your Noctalia Bar, you can remove it in:"
+echo "  Noctalia Settings (Mod+Shift+S) -> Bar -> Widgets."
 echo "=============================================================================="

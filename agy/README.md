@@ -18,12 +18,16 @@ Install the `agy` CLI on `PATH` (or `~/.local/bin/agy`).
 For the floating HUD window on Niri, add the window rule in `~/.config/niri/cfg/rules.kdl`:
 
 ```kdl
+// BEGIN AGY_NIRI_NOCTALIA
 window-rule {
-    match app-id="agy-terminal"
+    match app-id="^agy-terminal$"
     open-floating true
+    geometry-corner-radius 16
+    clip-to-geometry true
     default-column-width { fixed 1100; }
     default-window-height { fixed 720; }
 }
+// END AGY_NIRI_NOCTALIA
 ```
 
 ## Usage
@@ -38,6 +42,7 @@ Add the **Antigravity AGY** widget to your Noctalia Bar under **Settings** (<kbd
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
 | `show_label` | `bool` | `true` | Show the AGY text label next to the icon in the bar. |
+| `project_dir` | `string` | `~/Proyectos/agy` | Default workspace directory opened on left click. |
 
 ## Notes
 

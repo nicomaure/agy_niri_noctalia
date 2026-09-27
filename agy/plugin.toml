@@ -16,6 +16,13 @@ label_key = "settings.show_label.label"
 description_key = "settings.show_label.description"
 default = true
 
+[[setting]]
+key = "project_dir"
+type = "string"
+label_key = "settings.project_dir.label"
+description_key = "settings.project_dir.description"
+default = "~/Proyectos/agy"
+
 [[widget]]
 id = "bar"
 entry = "bar.luau"
