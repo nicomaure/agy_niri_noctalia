@@ -11,9 +11,10 @@ Quick bar launcher for the Antigravity Agent CLI (`agy`) with dedicated floating
 
 ## Requirements
 
-Install `alacritty` on `PATH`.
+- `alacritty` available on `PATH`.
+- `agy` (Antigravity CLI) available on `PATH`.
 
-Install the `agy` CLI on `PATH` (or `~/.local/bin/agy`).
+If either is missing, the widget shows an error notification instead of launching.
 
 For the floating HUD window on Niri, add the window rule in `~/.config/niri/cfg/rules.kdl`:
 
@@ -47,5 +48,7 @@ Add the **Antigravity AGY** widget to your Noctalia Bar under **Settings** (<kbd
 ## Notes
 
 - **Process Lifecycle:** The widget runs as a lightweight Luau bar entry with 0% CPU consumption while idle. It only spawns Alacritty upon interaction. When the terminal window is closed, all resources are completely freed.
+- **Spawned Processes:** On click it launches `alacritty` (argv-exec, no shell) running `agy`. No network calls, no filesystem writes.
 - **Compositor Support:** Designed for Niri Wayland Compositor, but functions on any Wayland compositor with Alacritty installed.
 - **Privacy & Security:** Runs entirely locally without network telemetry or remote code execution.
+- **Full Desktop Integration:** For the automated Niri window rule, desktop launcher, and the bundled Antigravity skill, see the companion repository: [nicomaure/agy_niri_noctalia](https://github.com/nicomaure/agy_niri_noctalia).
