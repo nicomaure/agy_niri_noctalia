@@ -1,0 +1,9 @@
+// Añadir esta regla dentro de ~/.config/niri/cfg/rules.kdl (o config.kdl)
+// Permite que agy se abra como una ventana flotante centrada estilo HUD
+
+window-rule {
+    match app-id="agy-terminal"
+    open-floating true
+    default-column-width { fixed 1100; }
+    default-window-height { fixed 720; }
+}

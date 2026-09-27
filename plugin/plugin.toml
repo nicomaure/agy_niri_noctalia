@@ -1,0 +1,14 @@
+id = "local/agy"
+name = "Antigravity AGY"
+version = "1.0.0"
+plugin_api = 9
+author = "Nico"
+license = "MIT"
+dependencies = ["alacritty"]
+tags = ["ai", "utility", "bar"]
+icon = "sparkles"
+description = "Lanzador de Antigravity Agent CLI (agy) en la barra de Noctalia"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
